@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<h2>Create Vehicle</h2>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input class="btn btn-info btn-sm mt-2 mb-3" type="submit" value="Submit">
+</form>
+
+{% endblock %}
