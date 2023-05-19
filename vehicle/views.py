@@ -60,6 +60,7 @@ class SignUpView(CreateView):
     def form_valid(self, form):
         return super().form_valid(form)
     
+    
 
 
 
@@ -110,7 +111,7 @@ class IndexView(ListView):
     
    
 
-@method_decorator(superadmindecs,name="dispatch")
+
 class VehicleUpdateView(UpdateView):
     model=Vehicle
     form_class=VehicleForm

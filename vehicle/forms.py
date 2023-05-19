@@ -11,7 +11,7 @@ class VehicleForm(forms.ModelForm):
 
         widgets={
             'vehicle_number':forms.TextInput(attrs={'placeholder':'Enter your vehiclenumber','pattern':'[A-Za-z0-9]+','placeholder':'Enter Alphanumeric Characters Only A-Z,a-z,0-9 ','class':'form-control'}),
-            'vehicle_type':forms.TextInput(attrs={'placeholder':'Enter your vehicletype','class':'form-control'}),
+            'vehicle_type':forms.Select(attrs={'class':'form-select form-control'}),
             'vehicle_model':forms.TextInput(attrs={'placeholder':'Enter your vehiclemodel','class':'form-control'}),
             'vehicle_description':forms.TextInput(attrs={'placeholder':'Enter your vehicledescription','class':'form-control'}),
              }
