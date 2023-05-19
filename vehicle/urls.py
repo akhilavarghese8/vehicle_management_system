@@ -11,7 +11,6 @@ urlpatterns = [
     path('home/vehicles/<int:id>/delete/',views.VehicleDeleteView.as_view(),name='vehicle-delete'),
     path('home/vehicles/create/',views.VehicleCreateView.as_view(), name='vehicle-create'),
     path('home/vehicles/<int:id>/update/',views.VehicleUpdateView.as_view(), name='vehicle-update'),
-    
     path("logout/",views.SignOutView,name="signout"),
     
     

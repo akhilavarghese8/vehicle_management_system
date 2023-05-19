@@ -31,7 +31,7 @@ List of details of user's i have created are listed below.
 ![Login Page](/vehiclemanagement/screeshots/Screenshot%20login.png)
 ![Register Page](/vehiclemanagement/screeshots/Screenshot%202023-05-09%20Registration%20page.png)
 ![Home Page](/vehiclemanagement/screeshots/Screenshot%20home.png)
-![Detail Page](/vehiclemanagement/screeshots/Screenshot%20detailadd.png)
+![Detail Page](/vehiclemanagement/screeshots/screeshot%20create.png)
 ![Edit Page](/vehiclemanagement/screeshots/Screenshot%20edit.png)
 
 ***Home View by Admin***

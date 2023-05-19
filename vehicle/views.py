@@ -1,9 +1,5 @@
-from django.forms.models import BaseModelForm
-from django.http import HttpResponse
 from django.shortcuts import render,redirect
-
-# Create your views here.
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView,FormView,TemplateView,DetailView,View
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView,FormView,View
 from vehicle.forms import RegistrationForm,LoginForm,VehicleForm
 from django.urls import reverse_lazy
 from vehicle.models import Vehicle,User,AbstractUser
@@ -11,40 +7,41 @@ from django.urls import reverse_lazy
 from django.contrib.auth import authenticate,login,logout
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
-from django.contrib.auth.decorators import user_passes_test
+
+# Create your views here.
+
 from django.contrib import messages
 
-
-
-def superadminsignin_required(fn):
+def signin_required(fn):
     def wrapper(request,*args,**kwargs):
-        if request.user.is_authenticated and request.user.role=='superadmin':
-            return fn(request,*args,**kwargs)
+        if not request.user.is_authenticated:
+            return redirect('signin')
+            
         else:
-            return redirect('error')
+           return fn(request,*args,**kwargs)
     return wrapper
 
-superadmindecs=[superadminsignin_required,never_cache]
 
-def adminsignin_required(fn):
+def superadmin_required(fn):
     def wrapper(request,*args,**kwargs):
-        if request.user.is_authenticated and request.user.role=='admin':
+        if request.user.is_authenticated and request.user.role == 'superadmin':
             return fn(request,*args,**kwargs)
         else:
-            return redirect('error')       
+            return redirect('signin')
     return wrapper
 
-admindecs=[adminsignin_required,never_cache]
 
-def usersignin_required(fn):
+
+def admin_or_superadmin_required(fn):
     def wrapper(request,*args,**kwargs):
-        if request.user.is_authenticated and request.user.role=='user':
+        if request.user.is_authenticated and request.user.role in ['superadmin','admin']:
             return fn(request,*args,**kwargs)
         else:
-            return redirect('error')       
+            return redirect('signin')       
     return wrapper
-
-userdecs=[usersignin_required,never_cache]
+decs=[never_cache,admin_or_superadmin_required]
+aces=[never_cache,superadmin_required]
+cdes=[signin_required,never_cache]
 
 
 
@@ -61,9 +58,6 @@ class SignUpView(CreateView):
         return super().form_valid(form)
     
     
-
-
-
 class SignInView(FormView):
     form_class=LoginForm
     template_name="login.html"
@@ -89,17 +83,19 @@ def SignOutView(request,*args,**kwargs):
     logout(request)
     return redirect('signin')
 
-@method_decorator(superadmindecs,name="dispatch")
+@method_decorator(aces,name="dispatch")
 class VehicleCreateView(CreateView):
     model=Vehicle
     template_name='vehicle_create.html'
     form_class=VehicleForm
     success_url=reverse_lazy("home")
-    k_url_kwarg='id'
+    
+
+    
 
 
 
-# @method_decorator(superadmindecs,userdecs,admindecs,name="dispatch")
+@method_decorator(cdes,name="dispatch")
 class IndexView(ListView):            
     model=Vehicle
     form_class=VehicleForm
@@ -111,7 +107,7 @@ class IndexView(ListView):
     
    
 
-
+@method_decorator(decs,name="dispatch")
 class VehicleUpdateView(UpdateView):
     model=Vehicle
     form_class=VehicleForm
@@ -120,12 +116,13 @@ class VehicleUpdateView(UpdateView):
     success_url=reverse_lazy("home")    
 
 
-@method_decorator(superadmindecs,name="dispatch")
+@method_decorator(aces,name="dispatch")
 class VehicleDeleteView(View):
     def get(self,request,*args,**kwargs):
         id=kwargs.get("id")
         Vehicle.objects.filter(id=id).delete()     
-        return redirect("home")    
+        return redirect("home") 
+        
     
 
 
