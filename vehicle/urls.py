@@ -8,7 +8,7 @@ urlpatterns = [
     path("signup/",views.SignUpView.as_view(),name="signup"),
     path("",views.SignInView.as_view(),name="signin"),
     path("home/",views.IndexView.as_view(),name="home"),
-    path('home/vehicles/<int:id>/delete/',views.VehicleDeleteView.as_view,name='vehicle-delete'),
+    path('home/vehicles/<int:id>/delete/',views.VehicleDeleteView.as_view(),name='vehicle-delete'),
     path('home/vehicles/create/',views.VehicleCreateView.as_view(), name='vehicle-create'),
     path('home/vehicles/<int:id>/update/',views.VehicleUpdateView.as_view(), name='vehicle-update'),
     

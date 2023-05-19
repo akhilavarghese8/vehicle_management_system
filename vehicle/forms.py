@@ -9,12 +9,12 @@ class VehicleForm(forms.ModelForm):
         model = Vehicle
         fields = ['vehicle_number', 'vehicle_type', 'vehicle_model', 'vehicle_description']
 
-    widgets={
-            'vehicle_number':forms.TextInput(attrs={'placeholder':'Enter your vehiclenumber','class':'form-control'}),
+        widgets={
+            'vehicle_number':forms.TextInput(attrs={'placeholder':'Enter your vehiclenumber','pattern':'[A-Za-z0-9]+','placeholder':'Enter Alphanumeric Characters Only A-Z,a-z,0-9 ','class':'form-control'}),
             'vehicle_type':forms.TextInput(attrs={'placeholder':'Enter your vehicletype','class':'form-control'}),
-            'vehicle_model':forms.EmailInput(attrs={'placeholder':'Enter your vehiclemodel','class':'form-control'}),
+            'vehicle_model':forms.TextInput(attrs={'placeholder':'Enter your vehiclemodel','class':'form-control'}),
             'vehicle_description':forms.TextInput(attrs={'placeholder':'Enter your vehicledescription','class':'form-control'}),
-    }
+             }
 
 
 

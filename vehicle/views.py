@@ -11,6 +11,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth import authenticate,login,logout
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
+from django.contrib.auth.decorators import user_passes_test
 from django.contrib import messages
 
 
@@ -28,7 +29,6 @@ superadmindecs=[superadminsignin_required,never_cache]
 def adminsignin_required(fn):
     def wrapper(request,*args,**kwargs):
         if request.user.is_authenticated and request.user.role=='admin':
-            
             return fn(request,*args,**kwargs)
         else:
             return redirect('error')       
@@ -39,13 +39,15 @@ admindecs=[adminsignin_required,never_cache]
 def usersignin_required(fn):
     def wrapper(request,*args,**kwargs):
         if request.user.is_authenticated and request.user.role=='user':
-            
             return fn(request,*args,**kwargs)
         else:
             return redirect('error')       
     return wrapper
 
 userdecs=[usersignin_required,never_cache]
+
+
+
 
 
 
@@ -56,8 +58,6 @@ class SignUpView(CreateView):
     template_name="registration.html"
     success_url=reverse_lazy("signin")
     def form_valid(self, form):
-        
-        
         return super().form_valid(form)
     
 
@@ -74,9 +74,7 @@ class SignInView(FormView):
             passw=form.cleaned_data.get("password")
             usr=authenticate(request,username=usrn,password=passw)
             if usr:
-                
                 login(request,usr)
-                
                 return redirect('home')
                        
             else:
@@ -90,6 +88,7 @@ def SignOutView(request,*args,**kwargs):
     logout(request)
     return redirect('signin')
 
+@method_decorator(superadmindecs,name="dispatch")
 class VehicleCreateView(CreateView):
     model=Vehicle
     template_name='vehicle_create.html'
@@ -99,28 +98,19 @@ class VehicleCreateView(CreateView):
 
 
 
-
+# @method_decorator(superadmindecs,userdecs,admindecs,name="dispatch")
 class IndexView(ListView):            
     model=Vehicle
     form_class=VehicleForm
     template_name='index.html'
     context_object_name="vehicle"
-    
-    
-
     def form_valid(self,form):
         form.instance.user=self.request.user
         return super().form_valid(form)
     
-    def get_context_data(self, **kwargs):
-        context=super().get_context_data(**kwargs)
-        vehicle=Vehicle.objects.all()
-        context['vehicle']=vehicle
-        user=User.objects.all()
-        context['user']=user
-        return context
+   
 
- 
+@method_decorator(superadmindecs,name="dispatch")
 class VehicleUpdateView(UpdateView):
     model=Vehicle
     form_class=VehicleForm
@@ -129,7 +119,7 @@ class VehicleUpdateView(UpdateView):
     success_url=reverse_lazy("home")    
 
 
-
+@method_decorator(superadmindecs,name="dispatch")
 class VehicleDeleteView(View):
     def get(self,request,*args,**kwargs):
         id=kwargs.get("id")
